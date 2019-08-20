@@ -4,12 +4,19 @@ using UnityEngine;
 
 public class Node : MonoBehaviour
 {
-    //Field
+    //Properties
     public GameObject spriteObj;
+    public float X { get; private set; }
+    public float Y { get; private set; }
 
-    // Start is called before the first frame update
-    void Start()
+    //Fields
+    private PlayerController pC;
+
+    public void Init(PlayerController pC)
     {
-        
+        this.pC = pC;
+
+        this.X = this.transform.position.x;
+        this.Y = this.transform.position.y;
     }
 }

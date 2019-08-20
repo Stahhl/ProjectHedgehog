@@ -5,6 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Node
+  - Enemy
+  - TargetNodes1
+  - SpawnNodes1
+  - TargetNodes2
+  - SpawnNodes2
   layers:
   - Default
   - TransparentFX
@@ -16,8 +21,8 @@ TagManager:
   - 
   - Background
   - 
-  - Node
-  - 
+  - Nodes
+  - ArenaObjects
   - 
   - 
   - 
