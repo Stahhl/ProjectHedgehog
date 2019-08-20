@@ -13,6 +13,12 @@ public class EnemyController : MonoBehaviour
     private float timer;
     private bool started;
 
+    [SerializeField]
+    private GameObject normalEnemyPrefab;
+
+    [SerializeField]
+    private GameObject enemyAnchorObj;
+
     public void Init(PlayerController pC)
     {
         this.pC = pC;
@@ -36,16 +42,24 @@ public class EnemyController : MonoBehaviour
     }
     public void ForceWave()
     {
-        if (started == false)
-            started = true;
+        //if (started == false)
+        //    started = true;
 
         SendWave();
     }
     void SendWave()
     {
         Debug.Log("SendWave");
-        Node spawnNode = pC.arenaController.GetSpawnNode();
+        Node spawnNode = pC.arenaController.GetNodeAt(0, 8);
+        Node targetNode = pC.arenaController.GetNodeAt(27, 8);
 
-        Debug.Log(spawnNode.X + " " + spawnNode.Y);
+
+        Debug.Log("Spawn: " + spawnNode.X + " " + spawnNode.Y);
+        Debug.Log("Target: " + targetNode.X + " " + targetNode.Y);
+
+        GameObject enemyObj = Instantiate(normalEnemyPrefab, new Vector3(spawnNode.X, spawnNode.Y, 0), Quaternion.identity, enemyAnchorObj.transform);
+        _Enemy enemy = enemyObj.GetComponentInChildren<_Enemy>();
+
+        enemy.Init(pC, spawnNode, targetNode);
     }
 }

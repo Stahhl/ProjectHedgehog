@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class Normal_ : _Enemy
 {
@@ -15,7 +16,10 @@ public class Normal_ : _Enemy
         //base
         base.SpeedModifier = speedModifer;
         base.IgnoreTerrain = ignoreTerrain;
-        //base.MyPath = QPath.QPath.FindPath<Tile>(GC, this, StartTile, TargetTile, Tile.CostEstimate).ToList();
+        base.MyPath = QPath.QPath.FindPath<Node>(pC, this, StartNode, TargetNode, Node.CostEstimate).ToList();
+        Debug.Log("start: " + StartNode.X + "_" + TargetNode.Y);
+        Debug.Log("target: " + TargetNode.X + "_" + TargetNode.Y);
+        Debug.Log("path: " + MyPath.Count);
     }
     protected override void Update()
     {

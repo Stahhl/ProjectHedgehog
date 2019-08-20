@@ -80,7 +80,7 @@ public class ArenaController : MonoBehaviour
         {
             for (int Y = 0; Y < arenaHeight; Y++)
             {
-                nodeObjArray[X, Y] = Instantiate(nodePrefab, new Vector3(X + 0.5f, Y + 0.5f, 0), Quaternion.identity, nodeAnchorObj.transform);
+                nodeObjArray[X, Y] = Instantiate(nodePrefab, new Vector3(X, Y, 0), Quaternion.identity, nodeAnchorObj.transform);
                 nodeArray[X, Y] = nodeObjArray[X, Y].GetComponent<Node>();
 
                 nodeArray[X, Y].Init(pC);
@@ -116,15 +116,18 @@ public class ArenaController : MonoBehaviour
             return null;
         }
     }
-    public Node GetTileAt(int X, int Y)
+    public Node GetNodeAt(float X, float Y)
     {
         try
         {
-            return nodeArray[X, Y];
+            int intX = Mathf.FloorToInt(X);
+            int intY = Mathf.FloorToInt(Y);
+
+            return nodeArray[intX, intY];
         }
         catch
         {
-            Debug.LogError("GetTileAt");
+            //Debug.LogError("GetTileAt: " + X + "_" + Y);
             return null;
         }
     }

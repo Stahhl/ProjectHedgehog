@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using QPath;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IQPathWorld
 {
     //Properties
     public ArenaController arenaController { get; private set; }
