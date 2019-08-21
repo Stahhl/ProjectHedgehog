@@ -37,6 +37,9 @@ namespace QPath
         public void DoWork()
         {
             //Debug.Log("QPath_AStar::DoWork");
+            Debug.Log("startTile: " + startTile);
+            Debug.Log("endTile: " + endTile);
+
             path = new Queue<T>();
 
             HashSet< T > closedSet = new HashSet<T>();
@@ -135,6 +138,10 @@ namespace QPath
 
         public T[] GetList()
         {
+            if(path.Count < 1)
+            {
+                Debug.LogError("path.Count < 1");
+            }
             return path.ToArray();
         }
 

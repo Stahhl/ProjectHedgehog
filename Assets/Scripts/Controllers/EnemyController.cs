@@ -7,11 +7,16 @@ using UnityEngine;
 /// </summary>
 public class EnemyController : MonoBehaviour
 {
+    //Properties
+    public List<_Enemy> EnemiesList { get; private set; }
+
     //Fields
     private PlayerController pC;
     private float waveTime;
     private float timer;
     private bool started;
+    private Dictionary<_Enemy, GameObject> enemyToGoMap;
+    private List<_Enemy> enemiesToDestroyList;
 
     [SerializeField]
     private GameObject normalEnemyPrefab;
@@ -23,6 +28,11 @@ public class EnemyController : MonoBehaviour
     {
         this.pC = pC;
 
+        EnemiesList = new List<_Enemy>();
+
+        enemyToGoMap = new Dictionary<_Enemy, GameObject>();
+        enemiesToDestroyList = new List<_Enemy>();
+
         waveTime = 5f;
     }
 
@@ -31,6 +41,8 @@ public class EnemyController : MonoBehaviour
     {
         if (pC == null || started == false)
             return;
+
+        UpdateEnemies();
 
         timer += Time.deltaTime;
 
@@ -42,24 +54,56 @@ public class EnemyController : MonoBehaviour
     }
     public void ForceWave()
     {
-        //if (started == false)
-        //    started = true;
+        if (started == false)
+            started = true;
 
         SendWave();
     }
     void SendWave()
     {
         Debug.Log("SendWave");
-        Node spawnNode = pC.arenaController.GetNodeAt(0, 8);
-        Node targetNode = pC.arenaController.GetNodeAt(27, 8);
 
+        Node spawnNode = pC.arenaController.GetSpawnNode();
+        Node targetNode = pC.arenaController.GetTargetNode();
 
-        Debug.Log("Spawn: " + spawnNode.X + " " + spawnNode.Y);
-        Debug.Log("Target: " + targetNode.X + " " + targetNode.Y);
 
         GameObject enemyObj = Instantiate(normalEnemyPrefab, new Vector3(spawnNode.X, spawnNode.Y, 0), Quaternion.identity, enemyAnchorObj.transform);
         _Enemy enemy = enemyObj.GetComponentInChildren<_Enemy>();
 
+        EnemiesList.Add(enemy);
+        enemyToGoMap[enemy] = enemyObj;
+
         enemy.Init(pC, spawnNode, targetNode);
+    }
+    void UpdateEnemies()
+    {
+        foreach (var enemy in enemyToGoMap)
+        {
+            if (enemy.Key.IsDestroyed == true)
+            {
+                if (enemy.Key.ReachedTarget == true)
+                    EnemyReachedTarget();
+
+                enemiesToDestroyList.Add(enemy.Key);
+            }
+        }
+
+        if (enemiesToDestroyList.Count > 0)
+            DestroyEnemies();
+    }
+    void EnemyReachedTarget()
+    {
+        Debug.Log("Enemy reached target! ");
+    }
+    void DestroyEnemies()
+    {
+        foreach (var item in enemiesToDestroyList)
+        {
+            Destroy(enemyToGoMap[item]);
+            enemyToGoMap.Remove(item);
+            EnemiesList.Remove(item);
+        }
+
+        enemiesToDestroyList.Clear();
     }
 }

@@ -22,9 +22,11 @@ public class ArenaController : MonoBehaviour
     private GameObject[,] nodeObjArray;
     private Node[,] nodeArray;
 
-    private List<Node> spawnNodes1;
+    //Properties
+    private List<List<Node>> listOfLists;
+    public List<Node> spawnNodes1;
     private List<Node> spawnNodes2;
-    private List<Node> targetNodes1;
+    public List<Node> targetNodes1;
     private List<Node> targetNodes2;
 
     public void Init(PlayerController pC)
@@ -34,15 +36,38 @@ public class ArenaController : MonoBehaviour
         nodeObjArray = new GameObject[arenaWidth, arenaHeight];
         nodeArray = new Node[arenaWidth, arenaHeight];
 
+
         spawnNodes1 = new List<Node>();
-        spawnNodes2 = new List<Node>();
+        //spawnNodes2 = new List<Node>();
         targetNodes1 = new List<Node>();
-        targetNodes2 = new List<Node>();
+        //targetNodes2 = new List<Node>();
+
+        listOfLists = new List<List<Node>>();
+        listOfLists.Add(spawnNodes1);
+        //listOfLists.Add(spawnNodes2);
+        listOfLists.Add(targetNodes1);
+        //listOfLists.Add(targetNodes2);
 
         refObj.SetActive(false);
 
-        SetupSpecialNodes();
         SetupMainNodes();
+        SetupSpecialNodes();
+        CheckNeighbours();
+    }
+
+    private void CheckNeighbours()
+    {
+        var nodes = GameObject.FindGameObjectsWithTag("Node");
+
+        foreach (var n in nodes)
+        {
+            var node = n.GetComponent<Node>();
+
+            if(node.GetNeighbours().Length <= 0)
+            {
+                Debug.LogError(node.myName);
+            }
+        }
     }
 
     // Update is called once per frame
@@ -56,23 +81,31 @@ public class ArenaController : MonoBehaviour
         GameObject sN1 = GameObject.FindGameObjectWithTag("SpawnNodes1");
         GameObject tN1 = GameObject.FindGameObjectWithTag("TargetNodes1");
 
-
         for (int i = 0; i < sN1.transform.childCount; i++)
         {
             Node node = sN1.transform.GetChild(i).GetComponent<Node>();
 
-            node.Init(pC);
-
             spawnNodes1.Add(node);
+
+            node.Init(pC);
         }
         for (int i = 0; i < tN1.transform.childCount; i++)
         {
             Node node = tN1.transform.GetChild(i).GetComponent<Node>();
 
-            node.Init(pC);
-
             targetNodes1.Add(node);
+
+            node.Init(pC);
         }
+
+        //for (int i = 0; i < spawnNodes1.Count; i++)
+        //{
+        //    spawnNodes1[i].SpecialNode(spawnNodes1, i);
+        //}
+        //for (int i = 0; i < targetNodes1.Count; i++)
+        //{
+        //    targetNodes1[i].SpecialNode(targetNodes1, i);
+        //}
     }
     private void SetupMainNodes()
     {
@@ -127,8 +160,26 @@ public class ArenaController : MonoBehaviour
         }
         catch
         {
-            //Debug.LogError("GetTileAt: " + X + "_" + Y);
-            return null;
+            return GetSpecialNode(X, Y);
         }
+    }
+    private Node GetSpecialNode(float X, float Y)
+    {
+        foreach (var list in listOfLists)
+        {
+            if(list[0].X == X || list[0].Y == Y)
+            {
+                foreach (var node in list)
+                {
+                    if (node.X == X && node.Y == Y)
+                    {
+                        Debug.Log("GetSpecialNode");
+                        return node;
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 }

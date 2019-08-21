@@ -1,5 +1,6 @@
 ﻿using QPath;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public enum NodeType
@@ -24,6 +25,9 @@ public class Node : MonoBehaviour, IQPathTile
 
     //Fields
     private PlayerController pC;
+    private Node[] myNeighbours;
+    private List<Node> specialNeighbours;
+    public string myName;
 
     public void Init(PlayerController pC)
     {
@@ -31,6 +35,10 @@ public class Node : MonoBehaviour, IQPathTile
             
         this.X = this.transform.position.x;
         this.Y = this.transform.position.y;
+
+        this.myName = "Node_" + X + "_" + Y;
+
+        //GetNeighbours();
     }
     public int GetMovementCost(bool ignoreTerrain)
     {
@@ -62,13 +70,36 @@ public class Node : MonoBehaviour, IQPathTile
         return new Vector3(X, Y, 0);
     }
     #region QPath
-    Node[] neighbours;
+    public void SpecialNode(List<Node> nodes, int index)
+    {
+        specialNeighbours = new List<Node>();
+        int max = nodes.Count - 1;
 
+        if (index == 0)
+        {
+            Debug.Log(myName + "0");
+            specialNeighbours.Add(nodes[index + 1]);
+        }
+        if (index == max)
+        {
+            Debug.Log(myName + "max");
+            specialNeighbours.Add(nodes[index - 1]);
+        }
+        if (index > 0 && index < max)
+        {
+            Debug.Log(myName + "middle");
+            specialNeighbours.Add(nodes[index + 1]);
+            specialNeighbours.Add(nodes[index - 1]);
+        }
+    }
     public IQPathTile[] GetNeighbours()
     {
-        //Debug.Log("Tile -- GetNeighbours of: " + C + "_" + R);
-        if (this.neighbours != null)
-            return this.neighbours;
+        //Debug.Log("GetNeighbours: " + gameObject.name + ": " + X + "_" + Y);
+        if (myNeighbours != null)
+        {
+            //Debug.Log("GetNeighbours - return");
+            return myNeighbours;
+        }
 
         List<Node> neighbours1 = new List<Node>();
 
@@ -90,10 +121,17 @@ public class Node : MonoBehaviour, IQPathTile
                 neighbours2.Add(t);
             }
         }
-
-        //Debug.Log("neighbours2: " + neighbours2.Count);
-        this.neighbours = neighbours2.ToArray();
-        return this.neighbours;
+        if(specialNeighbours != null)
+        {
+            Debug.Log(myName + " add specialNeighbours");
+            neighbours2.AddRange(specialNeighbours);
+        }
+        if(neighbours2.Count < 1)
+        {
+            Debug.Log(myName + " neighbours < 1");
+        }
+        myNeighbours = neighbours2.ToArray();
+        return myNeighbours;
     }
     public float AggregateCostToEnter(float costSoFar, IQPathTile sourceTile, IQPathUnit theUnit)
     {

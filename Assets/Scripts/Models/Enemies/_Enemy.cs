@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using QPath;
 using System.Linq;
+using System;
 
 public abstract class _Enemy : MonoBehaviour, IQPathUnit
 {
@@ -28,6 +29,9 @@ public abstract class _Enemy : MonoBehaviour, IQPathUnit
         this.TargetNode = targetNode;
 
         this.CurrentNode = this.StartNode;
+
+        this.MyPath = QPath.QPath.FindPath<Node>(pC, this, StartNode, TargetNode, Node.CostEstimate).ToList();
+        Debug.Log("MyPath: " + MyPath.Count);
     }
 
     protected virtual void Update()
@@ -36,9 +40,19 @@ public abstract class _Enemy : MonoBehaviour, IQPathUnit
             return;
 
         UpdateMovement();
-        //CheckIfReachedGoal();
+        CheckIfReachedGoal();
     }
-    void UpdateMovement()
+
+    private void CheckIfReachedGoal()
+    {
+        if (CurrentNode == TargetNode)
+        {
+            IsDestroyed = true;
+            ReachedTarget = true;
+        }
+    }
+
+    private void UpdateMovement()
     {
         if (nextNode == null && index == 0)
             nextNode = MyPath[index];
