@@ -6,10 +6,10 @@ TagManager:
   tags:
   - Node
   - Enemy
-  - TargetNodes1
-  - SpawnNodes1
-  - TargetNodes2
-  - SpawnNodes2
+  - SpawnTiles1
+  - SpawnTiles2
+  - TargetTiles1
+  - TargetTiles2
   layers:
   - Default
   - TransparentFX

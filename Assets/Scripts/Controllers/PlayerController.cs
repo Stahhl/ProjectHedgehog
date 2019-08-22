@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour, IQPathWorld
     public ArenaController arenaController { get; private set; }
     public EnemyController enemyController { get; private set; }
     public KeyboardController keyboardController { get; private set; }
+    public MouseController mouseController { get; private set; }
 
     // Start is called before the first frame update
     void Start()
@@ -16,10 +17,12 @@ public class PlayerController : MonoBehaviour, IQPathWorld
         this.arenaController = GetComponent<ArenaController>();
         this.enemyController = GetComponent<EnemyController>();
         this.keyboardController = GetComponent<KeyboardController>();
+        this.mouseController = GetComponent<MouseController>();
 
         arenaController.Init(this);
         enemyController.Init(this);
         keyboardController.Init(this);
+        mouseController.Init(this);
     }
 
     public void EscapeFunction()

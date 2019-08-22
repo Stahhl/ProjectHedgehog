@@ -63,17 +63,17 @@ public class EnemyController : MonoBehaviour
     {
         Debug.Log("SendWave");
 
-        Node spawnNode = pC.arenaController.GetSpawnNode();
-        Node targetNode = pC.arenaController.GetTargetNode();
+        Tile spawnTile = pC.arenaController.GetSpawnTile();
+        Tile targetTile = pC.arenaController.GetTargetTile();
 
 
-        GameObject enemyObj = Instantiate(normalEnemyPrefab, new Vector3(spawnNode.X, spawnNode.Y, 0), Quaternion.identity, enemyAnchorObj.transform);
+        GameObject enemyObj = Instantiate(normalEnemyPrefab, new Vector3(spawnTile.X, spawnTile.Y, 0), Quaternion.identity, enemyAnchorObj.transform);
         _Enemy enemy = enemyObj.GetComponentInChildren<_Enemy>();
 
         EnemiesList.Add(enemy);
         enemyToGoMap[enemy] = enemyObj;
 
-        enemy.Init(pC, spawnNode, targetNode);
+        enemy.Init(pC, spawnTile, targetTile);
     }
     void UpdateEnemies()
     {

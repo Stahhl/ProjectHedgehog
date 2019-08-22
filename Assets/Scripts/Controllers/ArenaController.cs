@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -10,64 +8,44 @@ public class ArenaController : MonoBehaviour
 {
     //Fields
     [SerializeField]
-    private GameObject nodeAnchorObj;
+    private GameObject tileAnchorObj;
     [SerializeField]
     private GameObject refObj;
     [SerializeField]
-    private GameObject nodePrefab;
+    private GameObject tilePrefab;
 
     private PlayerController pC;
     private int arenaWidth = 28;
     private int arenaHeight = 22;
-    private GameObject[,] nodeObjArray;
-    private Node[,] nodeArray;
+    private GameObject[,] tileObjArray;
+    private Tile[,] tileArray;
 
     //Properties
-    private List<List<Node>> listOfLists;
-    public List<Node> spawnNodes1;
-    private List<Node> spawnNodes2;
-    public List<Node> targetNodes1;
-    private List<Node> targetNodes2;
+    private List<List<Tile>> listOfLists;
+    public List<Tile> spawnTiles1;
+    private List<Tile> spawnTiles2;
+    public List<Tile> targetTiles1;
+    private List<Tile> targetTiles2;
 
     public void Init(PlayerController pC)
     {
         this.pC = pC;
 
-        nodeObjArray = new GameObject[arenaWidth, arenaHeight];
-        nodeArray = new Node[arenaWidth, arenaHeight];
+        tileObjArray = new GameObject[arenaWidth, arenaHeight];
+        tileArray = new Tile[arenaWidth, arenaHeight];
 
 
-        spawnNodes1 = new List<Node>();
-        //spawnNodes2 = new List<Node>();
-        targetNodes1 = new List<Node>();
-        //targetNodes2 = new List<Node>();
+        spawnTiles1 = new List<Tile>();
+        targetTiles1 = new List<Tile>();
 
-        listOfLists = new List<List<Node>>();
-        listOfLists.Add(spawnNodes1);
-        //listOfLists.Add(spawnNodes2);
-        listOfLists.Add(targetNodes1);
-        //listOfLists.Add(targetNodes2);
+        listOfLists = new List<List<Tile>>();
+        listOfLists.Add(spawnTiles1);
+        listOfLists.Add(targetTiles1);
 
         refObj.SetActive(false);
 
-        SetupMainNodes();
+        SetupMainTiles();
         SetupSpecialNodes();
-        CheckNeighbours();
-    }
-
-    private void CheckNeighbours()
-    {
-        var nodes = GameObject.FindGameObjectsWithTag("Node");
-
-        foreach (var n in nodes)
-        {
-            var node = n.GetComponent<Node>();
-
-            if(node.GetNeighbours().Length <= 0)
-            {
-                Debug.LogError(node.myName);
-            }
-        }
     }
 
     // Update is called once per frame
@@ -78,70 +56,61 @@ public class ArenaController : MonoBehaviour
     }
     private void SetupSpecialNodes()
     {
-        GameObject sN1 = GameObject.FindGameObjectWithTag("SpawnNodes1");
-        GameObject tN1 = GameObject.FindGameObjectWithTag("TargetNodes1");
+        GameObject sT1 = GameObject.FindGameObjectWithTag("SpawnTiles1");
+        GameObject tT1 = GameObject.FindGameObjectWithTag("TargetTiles1");
 
-        for (int i = 0; i < sN1.transform.childCount; i++)
+        for (int i = 0; i < sT1.transform.childCount; i++)
         {
-            Node node = sN1.transform.GetChild(i).GetComponent<Node>();
+            Tile tile = sT1.transform.GetChild(i).GetComponent<Tile>();
 
-            spawnNodes1.Add(node);
+            spawnTiles1.Add(tile);
 
-            node.Init(pC);
+            tile.Init(pC);
         }
-        for (int i = 0; i < tN1.transform.childCount; i++)
+        for (int i = 0; i < tT1.transform.childCount; i++)
         {
-            Node node = tN1.transform.GetChild(i).GetComponent<Node>();
+            Tile tile = tT1.transform.GetChild(i).GetComponent<Tile>();
 
-            targetNodes1.Add(node);
+            targetTiles1.Add(tile);
 
-            node.Init(pC);
+            tile.Init(pC);
         }
-
-        //for (int i = 0; i < spawnNodes1.Count; i++)
-        //{
-        //    spawnNodes1[i].SpecialNode(spawnNodes1, i);
-        //}
-        //for (int i = 0; i < targetNodes1.Count; i++)
-        //{
-        //    targetNodes1[i].SpecialNode(targetNodes1, i);
-        //}
     }
-    private void SetupMainNodes()
+    private void SetupMainTiles()
     {
         for (int X = 0; X < arenaWidth; X++)
         {
             for (int Y = 0; Y < arenaHeight; Y++)
             {
-                nodeObjArray[X, Y] = Instantiate(nodePrefab, new Vector3(X, Y, 0), Quaternion.identity, nodeAnchorObj.transform);
-                nodeArray[X, Y] = nodeObjArray[X, Y].GetComponent<Node>();
+                tileObjArray[X, Y] = Instantiate(tilePrefab, new Vector3(X, Y, 0), Quaternion.identity, tileAnchorObj.transform);
+                tileArray[X, Y] = tileObjArray[X, Y].GetComponent<Tile>();
 
-                nodeArray[X, Y].Init(pC);
+                tileArray[X, Y].Init(pC);
 
                 //? Comment out this to show nodes visually 
-                //nodeArray[X, Y].spriteObj.SetActive(false);
+                tileArray[X, Y].spriteObj.SetActive(false);
             }
         }
     }
-    public Node GetSpawnNode()
+    public Tile GetSpawnTile()
     {
         try
         {
-            int rnd = UnityEngine.Random.Range(0, spawnNodes1.Count);
-            return spawnNodes1[rnd];
+            int rnd = UnityEngine.Random.Range(0, spawnTiles1.Count);
+            return spawnTiles1[rnd];
         }
         catch
         {
-            Debug.LogError("GetSpawnNode");
+            Debug.LogError("GetSpawnTile");
             return null;
         }
     }
-    public Node GetTargetNode()
+    public Tile GetTargetTile()
     {
         try
         {
-            int rnd = UnityEngine.Random.Range(0, targetNodes1.Count);
-            return targetNodes1[rnd];
+            int rnd = UnityEngine.Random.Range(0, targetTiles1.Count);
+            return targetTiles1[rnd];
         }
         catch
         {
@@ -149,31 +118,34 @@ public class ArenaController : MonoBehaviour
             return null;
         }
     }
-    public Node GetNodeAt(float X, float Y)
+    //Check main node array
+    public Tile GetTileAt(int X, int Y)
     {
         try
         {
-            int intX = Mathf.FloorToInt(X);
-            int intY = Mathf.FloorToInt(Y);
-
-            return nodeArray[intX, intY];
+            return tileArray[X, Y];
         }
         catch
         {
-            return GetSpecialNode(X, Y);
+            return GetSpecialTile(X, Y);
         }
     }
-    private Node GetSpecialNode(float X, float Y)
+    //If there is no tile at the coords check spawn and target tiles
+    // ? Method should be kept as light as possible
+    // todo refractor as much as possible
+    private Tile GetSpecialTile(float X, float Y)
     {
         foreach (var list in listOfLists)
         {
+            //If X matches - vertical 
+            //If Y matches - horizontal
             if(list[0].X == X || list[0].Y == Y)
             {
                 foreach (var node in list)
                 {
                     if (node.X == X && node.Y == Y)
                     {
-                        Debug.Log("GetSpecialNode");
+                        ///Debug.Log("GetSpecialNode");
                         return node;
                     }
                 }

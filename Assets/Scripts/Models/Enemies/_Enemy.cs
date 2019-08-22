@@ -8,21 +8,21 @@ using System;
 public abstract class _Enemy : MonoBehaviour, IQPathUnit
 {
     //Properties
-    public Node StartNode { get; protected set; }
-    public Node TargetNode { get; protected set; }
-    public Node CurrentNode { get; protected set; }
+    public Tile StartNode { get; protected set; }
+    public Tile TargetNode { get; protected set; }
+    public Tile CurrentNode { get; protected set; }
     public float SpeedModifier { get; protected set; }
     public bool IgnoreTerrain { get; protected set; }
     public bool IsDestroyed { get; protected set; }
     public bool ReachedTarget { get; protected set; }
-    public List<Node> MyPath { get; protected set; }
+    public List<Tile> MyPath { get; protected set; }
 
     //Fields
     protected PlayerController pC;
-    private Node nextNode;
+    private Tile nextNode;
     private int index;
 
-    public virtual void Init(PlayerController pC, Node startNode, Node targetNode)
+    public virtual void Init(PlayerController pC, Tile startNode, Tile targetNode)
     {
         this.pC = pC;
         this.StartNode = startNode;
@@ -30,7 +30,7 @@ public abstract class _Enemy : MonoBehaviour, IQPathUnit
 
         this.CurrentNode = this.StartNode;
 
-        this.MyPath = QPath.QPath.FindPath<Node>(pC, this, StartNode, TargetNode, Node.CostEstimate).ToList();
+        this.MyPath = QPath.QPath.FindPath<Tile>(pC, this, StartNode, TargetNode, Tile.CostEstimate).ToList();
         Debug.Log("MyPath: " + MyPath.Count);
     }
 
@@ -57,7 +57,7 @@ public abstract class _Enemy : MonoBehaviour, IQPathUnit
         if (nextNode == null && index == 0)
             nextNode = MyPath[index];
 
-        Vector3 targetPos = nextNode.GetPosition();
+        Vector3 targetPos = nextNode.GetTilePosition();
 
         Vector3 direction = targetPos - transform.position;
 
@@ -81,31 +81,31 @@ public abstract class _Enemy : MonoBehaviour, IQPathUnit
 
         nextNode = MyPath[index];
     }
-    public Node[] GetPath()
+    public Tile[] GetPath()
     {
         if (MyPath == null)
             return null;
 
         return MyPath.ToArray();
     }
-    public int CostToEnterNode(Node oldTile, Node newTile)
+    public int CostToEnterNode(Tile oldTile, Tile newTile)
     {
         //Debug.Log("Tile: " + tile.ToString() + " Movement cost to enter: " + tile.movementCost);
         int movementCostToEnterNewTile = newTile.GetMovementCost(IgnoreTerrain);
 
-        if (newTile.MyNodeType == NodeType.FRIENDLY)
+        if (newTile.MyTileType == TileType.FRIENDLY)
         {
             movementCostToEnterNewTile -= 99;
         }
 
         return movementCostToEnterNewTile;
     }
-    public float AggregateTurnsToEnterTile(Node tile, float turnsToDate)
+    public float AggregateTurnsToEnterTile(Tile tile, float turnsToDate)
     {
-        Node[] tPath = GetPath();
+        Tile[] tPath = GetPath();
 
-        Node newTile = tile;
-        Node oldTile = StartNode;
+        Tile newTile = tile;
+        Tile oldTile = StartNode;
 
         if (tPath != null && tPath.Length > 1)
             oldTile = tPath[tPath.Length - 1];

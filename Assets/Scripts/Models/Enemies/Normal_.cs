@@ -9,7 +9,7 @@ public class Normal_ : _Enemy
     private float speedModifer = 6f;
     private bool ignoreTerrain = false;
 
-    public override void Init(PlayerController pC, Node startNode, Node targetNode)
+    public override void Init(PlayerController pC, Tile startNode, Tile targetNode)
     {
         base.Init(pC, startNode, targetNode);
 

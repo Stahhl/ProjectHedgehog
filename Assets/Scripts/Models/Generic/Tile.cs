@@ -1,9 +1,8 @@
 ﻿using QPath;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
-public enum NodeType
+public enum TileType
 {
     NULL,
     OPEN,
@@ -14,31 +13,30 @@ public enum NodeType
     FRIENDLY
 }
 
-public class Node : MonoBehaviour, IQPathTile
+public class Tile : MonoBehaviour, IQPathTile
 {
     //Properties
-    public GameObject spriteObj;
-    public float X { get; private set; }
-    public float Y { get; private set; }
-    public NodeType MyNodeType { get; set; }
+    public int X { get; private set; }
+    public int Y { get; private set; }
+    public TileType MyTileType { get; private set; }
 
 
     //Fields
     private PlayerController pC;
-    private Node[] myNeighbours;
-    private List<Node> specialNeighbours;
+    private Tile[] myNeighbours;
+    private List<Tile> specialNeighbours;
+
     public string myName;
+    public GameObject spriteObj;
 
     public void Init(PlayerController pC)
     {
         this.pC = pC;
             
-        this.X = this.transform.position.x;
-        this.Y = this.transform.position.y;
+        this.X = Mathf.FloorToInt(this.transform.position.x);
+        this.Y = Mathf.FloorToInt(this.transform.position.y);
 
-        this.myName = "Node_" + X + "_" + Y;
-
-        //GetNeighbours();
+        this.myName = "Tile_" + X + "_" + Y;
     }
     public int GetMovementCost(bool ignoreTerrain)
     {
@@ -46,52 +44,29 @@ public class Node : MonoBehaviour, IQPathTile
 
         if (ignoreTerrain == true)
             return cost;
-        if (MyNodeType == NodeType.OCCUPIED)
+        if (MyTileType == TileType.OCCUPIED)
             cost -= 99;
 
         return cost;
     }
     public static float CostEstimate(IQPathTile aa, IQPathTile bb)
     {
-        return Distance((Node)aa, (Node)bb);
+        return Distance((Tile)aa, (Tile)bb);
     }
-    public static float Distance(Node a, Node b)
+    public static float Distance(Tile a, Tile b)
     {
         float dC = Mathf.Abs(a.X - b.X); //Column
         float dR = Mathf.Abs(a.Y - b.Y); //Row
 
         var x = Mathf.Max(dC, dR);
-        //Debug.Log(x);
         return x;
     }
-    public Vector3 GetPosition()
+    public Vector3 GetTilePosition()
     {
         //Debug.Log("GetTilePosition");
         return new Vector3(X, Y, 0);
     }
     #region QPath
-    public void SpecialNode(List<Node> nodes, int index)
-    {
-        specialNeighbours = new List<Node>();
-        int max = nodes.Count - 1;
-
-        if (index == 0)
-        {
-            Debug.Log(myName + "0");
-            specialNeighbours.Add(nodes[index + 1]);
-        }
-        if (index == max)
-        {
-            Debug.Log(myName + "max");
-            specialNeighbours.Add(nodes[index - 1]);
-        }
-        if (index > 0 && index < max)
-        {
-            Debug.Log(myName + "middle");
-            specialNeighbours.Add(nodes[index + 1]);
-            specialNeighbours.Add(nodes[index - 1]);
-        }
-    }
     public IQPathTile[] GetNeighbours()
     {
         //Debug.Log("GetNeighbours: " + gameObject.name + ": " + X + "_" + Y);
@@ -101,20 +76,20 @@ public class Node : MonoBehaviour, IQPathTile
             return myNeighbours;
         }
 
-        List<Node> neighbours1 = new List<Node>();
+        List<Tile> neighbours1 = new List<Tile>();
 
         //TODO: clean this code up, a loop?
         //Every tile has six neighbours
-        neighbours1.Add(pC.arenaController.GetNodeAt(X + 0, Y + 1)); //N
-        neighbours1.Add(pC.arenaController.GetNodeAt(X + 1, Y + 0)); //E
-        neighbours1.Add(pC.arenaController.GetNodeAt(X + 0, Y - 1)); //S
-        neighbours1.Add(pC.arenaController.GetNodeAt(X - 1, Y + 0)); //W
+        neighbours1.Add(pC.arenaController.GetTileAt(X + 0, Y + 1)); //N
+        neighbours1.Add(pC.arenaController.GetTileAt(X + 1, Y + 0)); //E
+        neighbours1.Add(pC.arenaController.GetTileAt(X + 0, Y - 1)); //S
+        neighbours1.Add(pC.arenaController.GetTileAt(X - 1, Y + 0)); //W
 
         //A neighbour could be null
         //A second list were nulls are removed
-        List<Node> neighbours2 = new List<Node>();
+        List<Tile> neighbours2 = new List<Tile>();
 
-        foreach (Node t in neighbours1)
+        foreach (Tile t in neighbours1)
         {
             if (t != null)
             {
