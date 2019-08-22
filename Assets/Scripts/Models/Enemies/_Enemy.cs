@@ -31,7 +31,6 @@ public abstract class _Enemy : MonoBehaviour, IQPathUnit
         this.CurrentNode = this.StartNode;
 
         this.MyPath = QPath.QPath.FindPath<Tile>(pC, this, StartNode, TargetNode, Tile.CostEstimate).ToList();
-        Debug.Log("MyPath: " + MyPath.Count);
     }
 
     protected virtual void Update()

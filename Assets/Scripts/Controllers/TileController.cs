@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// Manages the visuals of the arena and the node system.
 /// </summary>
-public class ArenaController : MonoBehaviour
+public class TileController : MonoBehaviour
 {
     //Fields
     [SerializeField]

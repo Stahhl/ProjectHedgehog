@@ -11,11 +11,11 @@ public class Normal_ : _Enemy
 
     public override void Init(PlayerController pC, Tile startNode, Tile targetNode)
     {
-        base.Init(pC, startNode, targetNode);
-
-        //base
         base.SpeedModifier = speedModifer;
         base.IgnoreTerrain = ignoreTerrain;
+
+        //base
+        base.Init(pC, startNode, targetNode);
     }
     protected override void Update()
     {
