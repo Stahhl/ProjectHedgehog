@@ -35,26 +35,28 @@ public class MouseController : MonoBehaviour
         if (pC == null)
             return;
 
-        //TileUnderMouse = MouseToTile();
+        TileUnderMouse = MouseToTile();
 
-        //if (TileUnderMouse != lastTileUnderMouse)
-        //{
-        //    //gC.BuildingController.DisplayPreviewOnMouse(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-        //    lastTileUnderMouse = TileUnderMouse;
-        //    Debug.Log("New tile under mouse! ");
-        //}
+        if (TileUnderMouse != lastTileUnderMouse)
+        {
+            //Debug.Log("new TileUnderMouse");
+
+            pC.buildingController.DisplayPreview(TileUnderMouse);
+            lastTileUnderMouse = TileUnderMouse;
+        }
     }
+    Tile MouseToTile()
+    {
+        Ray mouserRay = pC.mainCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitInfo;
 
-    //Tile MouseToTile()
-    //{
-    //    Ray mouserRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-    //    RaycastHit hitInfo;
+        if (Physics.Raycast(mouserRay, out hitInfo, Mathf.Infinity, LayerTileID.value))
+        {
+            GameObject tileGo = hitInfo.rigidbody.gameObject;
+            Tile tile = tileGo.GetComponent<Tile>();
 
-    //    if (Physics.Raycast(mouserRay, out hitInfo, Mathf.Infinity, LayerTileID.value))
-    //    {
-    //        GameObject tileGo = hitInfo.rigidbody.gameObject;
-    //        return tileGo != null ? gC.TileController.GetTileFromGo(tileGo) : null;
-    //    }
-    //    return null;
-    //}
+            return tile != null ? tile : null;
+        }
+        return null;
+    }
 }

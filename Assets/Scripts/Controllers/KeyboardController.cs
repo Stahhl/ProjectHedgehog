@@ -34,5 +34,9 @@ public class KeyboardController : MonoBehaviour
         {
             pC.enemyController.ForceWave();
         }
+        if(Input.GetKeyDown(KeyCode.B))
+        {
+            pC.buildingController.ToggleBuildMode();
+        }
     }
 }
