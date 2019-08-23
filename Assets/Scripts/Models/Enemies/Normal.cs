@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class Normal_ : _Enemy
+public class Normal : _Enemy
 {
     //Child values assigned to parent properties in init
     private float speedModifer = 6f;

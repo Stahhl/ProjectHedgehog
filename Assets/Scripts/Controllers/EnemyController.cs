@@ -19,9 +19,6 @@ public class EnemyController : MonoBehaviour
     private List<_Enemy> enemiesToDestroyList;
 
     [SerializeField]
-    private GameObject normalEnemyPrefab;
-
-    [SerializeField]
     private GameObject enemyAnchorObj;
 
     public void Init(PlayerController pC)
@@ -63,11 +60,11 @@ public class EnemyController : MonoBehaviour
     {
         Debug.Log("SendWave");
 
-        Tile spawnTile = pC.arenaController.GetSpawnTile();
-        Tile targetTile = pC.arenaController.GetTargetTile();
+        Tile spawnTile = pC.tileController.GetSpawnTile();
+        Tile targetTile = pC.tileController.GetTargetTile();
 
 
-        GameObject enemyObj = Instantiate(normalEnemyPrefab, new Vector3(spawnTile.X, spawnTile.Y, 0), Quaternion.identity, enemyAnchorObj.transform);
+        GameObject enemyObj = Instantiate(pC.prefabController.EnemyNormalPrefab, new Vector3(spawnTile.X, spawnTile.Y, 0), Quaternion.identity, enemyAnchorObj.transform);
         _Enemy enemy = enemyObj.GetComponentInChildren<_Enemy>();
 
         EnemiesList.Add(enemy);

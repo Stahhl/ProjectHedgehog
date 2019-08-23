@@ -18,7 +18,7 @@ public class Tile : MonoBehaviour, IQPathTile
     //Properties
     public int X { get; private set; }
     public int Y { get; private set; }
-    public TileType MyTileType { get; private set; }
+    public TileType MyTileType { get; set; }
 
 
     //Fields
@@ -35,6 +35,8 @@ public class Tile : MonoBehaviour, IQPathTile
             
         this.X = Mathf.FloorToInt(this.transform.position.x);
         this.Y = Mathf.FloorToInt(this.transform.position.y);
+
+        this.MyTileType = TileType.OPEN;
 
         this.myName = "Tile_" + X + "_" + Y;
     }
@@ -80,10 +82,10 @@ public class Tile : MonoBehaviour, IQPathTile
 
         //TODO: clean this code up, a loop?
         //Every tile has six neighbours
-        neighbours1.Add(pC.arenaController.GetTileAt(X + 0, Y + 1)); //N
-        neighbours1.Add(pC.arenaController.GetTileAt(X + 1, Y + 0)); //E
-        neighbours1.Add(pC.arenaController.GetTileAt(X + 0, Y - 1)); //S
-        neighbours1.Add(pC.arenaController.GetTileAt(X - 1, Y + 0)); //W
+        neighbours1.Add(pC.tileController.GetTileAt(X + 0, Y + 1)); //N
+        neighbours1.Add(pC.tileController.GetTileAt(X + 1, Y + 0)); //E
+        neighbours1.Add(pC.tileController.GetTileAt(X + 0, Y - 1)); //S
+        neighbours1.Add(pC.tileController.GetTileAt(X - 1, Y + 0)); //W
 
         //A neighbour could be null
         //A second list were nulls are removed

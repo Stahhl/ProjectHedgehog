@@ -6,7 +6,12 @@ public class BuildingController : MonoBehaviour
 {
     //Fields
     private PlayerController pC;
-    private Vector3 point;
+    private bool buildingPlacement;
+    private GameObject[] previewObj;
+    private List<Tile> previewTiles;
+
+    [SerializeField]
+    private GameObject TowerAnchorObj;
 
     //Properties
     public bool BuildMode { get; private set; }
@@ -24,21 +29,84 @@ public class BuildingController : MonoBehaviour
 
 
     }
-    public void DisplayPreview(Tile tile)
+    public void BuildBuilding()
     {
-        if (BuildMode == false || tile == null)
+        if(BuildMode == false || buildingPlacement == false)
         {
-            //todo if preview is not null delete it
+            return;
+        }
+
+        Debug.Log("BuildBuilding");
+        PlaceTower(previewTiles, pC.prefabController.TowerBlockerPrefab);
+    }
+    private void PlaceTower(List<Tile> tiles, GameObject towerPrefab)
+    {
+        GameObject towerObj = Instantiate(towerPrefab, new Vector3(tiles[0].X, tiles[0].Y, 0), Quaternion.identity);
+
+        towerObj.GetComponentInChildren<_Tower>().Init(pC, tiles);
+    }
+    public void PreviewOnMouse(Vector2? point)
+    {
+        DestroyPreview();
+
+        if (BuildMode == false || point == null)
+        {
+            //Debug.Log("DisplayPreview - return");
+            //BuildMode = false;
+            buildingPlacement = false;
+
             return;
         }
 
         //Debug.Log("DisplayPreview");
-        point = new Vector2(tile.X, tile.Y);
 
+        previewObj = new GameObject[4];
+        previewTiles = pC.tileController.GetTilesAroundPoint((Vector2)point);
+        buildingPlacement = true;
+
+        foreach (Tile t in previewTiles)
+        {
+            if(t == null || t.MyTileType != TileType.OPEN)
+            {
+                buildingPlacement = false;
+            }
+        }
+
+        DrawPreview(previewTiles, buildingPlacement);
     }
     public void ToggleBuildMode()
     {
         BuildMode = !BuildMode;
+        DestroyPreview();
         Debug.Log("ToggleBuildMode: " + BuildMode);
+    }
+    private void DrawPreview(List<Tile> tiles, bool placement)
+    {
+        //Debug.Log(previewObj.Length);
+        Color color = placement == true ? Color.green : Color.red;
+
+        for (int i = 0; i < tiles.Count; i++)
+        {
+            if (tiles[i] == null)
+                continue;
+
+            previewObj[i] = Instantiate(pC.prefabController.PreviewPrefab, tiles[i].GetTilePosition(), Quaternion.identity/*, gC.AnchorObj.transform*/);
+            previewObj[i].GetComponentInChildren<SpriteRenderer>().color = color;
+        }
+    }
+    private void DestroyPreview()
+    {
+        if (previewObj == null)
+            return;
+
+        //Debug.Log("DestroyPreview");
+
+        foreach (var gO in previewObj)
+        {
+            Destroy(gO);
+        }
+
+        previewObj = null;
+        previewTiles = null;
     }
 }

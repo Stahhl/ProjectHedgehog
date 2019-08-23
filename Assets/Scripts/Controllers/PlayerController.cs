@@ -6,30 +6,35 @@ using QPath;
 public class PlayerController : MonoBehaviour, IQPathWorld
 {
     //Fields
-    public GameObject MainCameraObj;
-
-    [HideInInspector]
-    public Camera mainCamera;
+    [SerializeField]
+    private GameObject MainCameraObj;
+    [SerializeField]
+    private GameObject PrefabControllerObj;
 
     //Properties
-    public TileController arenaController { get; private set; }
+    public TileController tileController { get; private set; }
     public EnemyController enemyController { get; private set; }
     public KeyboardController keyboardController { get; private set; }
     public MouseController mouseController { get; private set; }
-    public BuildingController buildingController { get; protected set; }
+    public BuildingController buildingController { get; private set; }
+    public PrefabController prefabController { get; private set; }
+
+    public Camera mainCamera { get; private set; }
 
     // Start is called before the first frame update
     void Start()
     {
         mainCamera = MainCameraObj.GetComponentInChildren<Camera>();
 
-        this.arenaController = GetComponent<TileController>();
+        this.tileController = GetComponent<TileController>();
         this.enemyController = GetComponent<EnemyController>();
         this.keyboardController = GetComponent<KeyboardController>();
         this.mouseController = GetComponent<MouseController>();
         this.buildingController = GetComponent<BuildingController>();
 
-        arenaController.Init(this);
+        this.prefabController = PrefabControllerObj.GetComponent<PrefabController>();
+
+        tileController.Init(this);
         enemyController.Init(this);
         keyboardController.Init(this);
         mouseController.Init(this);
