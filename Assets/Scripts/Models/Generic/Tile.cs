@@ -20,7 +20,6 @@ public class Tile : MonoBehaviour, IQPathTile
     public int Y { get; private set; }
     public TileType MyTileType { get; set; }
 
-
     //Fields
     private PlayerController pC;
     private Tile[] myNeighbours;
@@ -40,9 +39,10 @@ public class Tile : MonoBehaviour, IQPathTile
 
         this.myName = "Tile_" + X + "_" + Y;
     }
-    public int GetMovementCost(bool ignoreTerrain)
+    //Any movement stuff relevant to this tile
+    public float GetMovementCost(bool ignoreTerrain)
     {
-        int cost = 1;
+        float cost = 1f;
 
         if (ignoreTerrain == true)
             return cost;
@@ -60,8 +60,7 @@ public class Tile : MonoBehaviour, IQPathTile
         float dC = Mathf.Abs(a.X - b.X); //Column
         float dR = Mathf.Abs(a.Y - b.Y); //Row
 
-        var x = Mathf.Max(dC, dR);
-        return x;
+        return Mathf.Max(dC, dR);
     }
     public Vector3 GetTilePosition()
     {
@@ -110,9 +109,9 @@ public class Tile : MonoBehaviour, IQPathTile
         myNeighbours = neighbours2.ToArray();
         return myNeighbours;
     }
-    public float AggregateCostToEnter(float costSoFar, IQPathTile sourceTile, IQPathUnit theUnit)
+    public float AggregateCostToEnter(float costSoFar, IQPathTile sourceTile, IQPathTile[] twins, IQPathUnit theUnit)
     {
-        return ((_Enemy)theUnit).AggregateTurnsToEnterTile(this, costSoFar);
+        return ((_Enemy)theUnit).TileToTileCost(this, twins);
     }
     #endregion
 }

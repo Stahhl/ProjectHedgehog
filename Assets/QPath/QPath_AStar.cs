@@ -33,11 +33,15 @@ namespace QPath
         CostEstimateDelegate costEstimateFunc;
 
         Queue<T> path;
+        Dictionary<IQPathTile, IQPathTile> pathList;
+        IQPathTile[] twins;
 
         public void DoWork()
         {
             //Debug.Log("QPath_AStar::DoWork");
             path = new Queue<T>();
+            pathList = new Dictionary<IQPathTile, IQPathTile>();
+            //twins = new Queue<IQPathTile>();
 
             HashSet< T > closedSet = new HashSet<T>();
 
@@ -74,16 +78,15 @@ namespace QPath
                         continue; // ignore this already completed neighbor
                     }
 
+
                     float total_pathfinding_cost_to_neighbor = 
-                        neighbour.AggregateCostToEnter( g_score[current], current, unit );
+                        neighbour.AggregateCostToEnter( g_score[current], current, Foo(null), unit );
 
                     if(total_pathfinding_cost_to_neighbor < 0)
                     {
                         // Values less than zero represent an invalid/impassable tile
                         continue;
                     }
-
-
 
                     float tentative_g_score = total_pathfinding_cost_to_neighbor;
 
@@ -97,14 +100,45 @@ namespace QPath
 
                     // This is either a new tile or we just found a cheaper route to it
                     came_From[neighbour] = current;
+                    //pathList[neighbour] = current;
                     g_score[neighbour] = tentative_g_score;
                     f_score[neighbour] = g_score[neighbour] + costEstimateFunc(neighbour, endTile);
+
+                    Foo(neighbour);
 
                     openSet.EnqueueOrUpdate(neighbour, f_score[neighbour]);
                 } // foreach neighbour
             } // while
         }
+        //Keep track of the two latest tiles to calc direction
+        private IQPathTile[] Foo(IQPathTile t)
+        {
+            if(twins == null)
+                twins = new IQPathTile[2];
 
+            if (t == null)
+                return twins;
+
+            if (twins.Length == 0)
+            {
+                twins[0] = t;
+            }
+            if (twins.Length == 1)
+            {
+                twins[1] = t;
+            }
+            if(twins.Length == 2)
+            {
+                twins[0] = twins[1];
+                twins[1] = t;
+            }
+            if(twins.Length > 2)
+            {
+                Debug.LogError("twins.Length > 2");
+            }
+
+            return twins;
+        }
         private void Reconstruct_path(
             Dictionary<T, T> came_From,
             T current)
@@ -139,6 +173,13 @@ namespace QPath
             {
                 Debug.LogError("path.Count < 1");
             }
+            //if(pathList.Count != path.Count)
+            //{
+            //    Debug.LogError("pathList.Count != path.Count");
+            //    Debug.Log("path = " + path.Count);
+            //    Debug.Log("pathList = " + pathList.Count);
+            //}
+            //Debug.Log(twins.Length);
             return path.ToArray();
         }
 

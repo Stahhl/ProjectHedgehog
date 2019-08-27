@@ -6,11 +6,12 @@ using UnityEngine;
 namespace QPath
 {
 
-    public interface IQPathTile {
-
+    public interface IQPathTile
+    {
         IQPathTile[] GetNeighbours();
+        Vector3 GetTilePosition();
 
-        float AggregateCostToEnter( float costSoFar, IQPathTile sourceTile, IQPathUnit theUnit );
+        float AggregateCostToEnter( float costSoFar, IQPathTile sourceTile, IQPathTile[] twins, IQPathUnit theUnit );
 
     }
 

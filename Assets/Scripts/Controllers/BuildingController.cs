@@ -41,7 +41,12 @@ public class BuildingController : MonoBehaviour
     }
     private void PlaceTower(List<Tile> tiles, GameObject towerPrefab)
     {
-        GameObject towerObj = Instantiate(towerPrefab, new Vector3(tiles[0].X, tiles[0].Y, 0), Quaternion.identity);
+        GameObject towerObj = Instantiate(
+            towerPrefab, 
+            new Vector3(tiles[0].X, tiles[0].Y, 0),
+            Quaternion.identity, 
+            TowerAnchorObj.transform
+            );
 
         towerObj.GetComponentInChildren<_Tower>().Init(pC, tiles);
     }
@@ -90,7 +95,13 @@ public class BuildingController : MonoBehaviour
             if (tiles[i] == null)
                 continue;
 
-            previewObj[i] = Instantiate(pC.prefabController.PreviewPrefab, tiles[i].GetTilePosition(), Quaternion.identity/*, gC.AnchorObj.transform*/);
+            previewObj[i] = Instantiate(
+                pC.prefabController.PreviewPrefab, 
+                tiles[i].GetTilePosition(), 
+                Quaternion.identity, 
+                TowerAnchorObj.transform
+                );
+
             previewObj[i].GetComponentInChildren<SpriteRenderer>().color = color;
         }
     }

@@ -1822,7 +1822,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5bdbf36c62f684148b7f793121d17e13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TowerAnchorObj: {fileID: 0}
+  TowerAnchorObj: {fileID: 74937493}
 --- !u!1001 &6569573599924137461
 PrefabInstance:
   m_ObjectHideFlags: 0

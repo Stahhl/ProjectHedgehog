@@ -43,7 +43,7 @@ public class TileController : MonoBehaviour
         refObj.SetActive(false);
 
         SetupMainTiles();
-        SetupSpecialNodes();
+        SetupSpecialTiles();
     }
 
     // Update is called once per frame
@@ -71,7 +71,7 @@ public class TileController : MonoBehaviour
 
         return tiles;
     }
-    private void SetupSpecialNodes()
+    private void SetupSpecialTiles()
     {
         GameObject sT1 = GameObject.FindGameObjectWithTag("SpawnTiles1");
         GameObject tT1 = GameObject.FindGameObjectWithTag("TargetTiles1");
