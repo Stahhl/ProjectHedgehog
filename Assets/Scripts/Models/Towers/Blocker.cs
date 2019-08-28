@@ -7,7 +7,5 @@ public class Blocker : _Tower
     public override void Init(PlayerController pC, List<Tile> tiles)
     {
         base.Init(pC, tiles);
-
-        base.myProjectilePrefab = pC.prefabController.ProjectilePelletPrefab;
     }
 }
