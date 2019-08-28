@@ -13,5 +13,8 @@ public class PrefabController : MonoBehaviour
 
     //Towers
     public GameObject TowerBlockerPrefab;
+    public GameObject TowerPelletPrefab;
 
+    //Projectiles
+    public GameObject ProjectilePelletPrefab;
 }

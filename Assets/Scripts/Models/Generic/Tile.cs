@@ -23,7 +23,6 @@ public class Tile : MonoBehaviour, IQPathTile
     //Fields
     private PlayerController pC;
     private Tile[] myNeighbours;
-    private List<Tile> specialNeighbours;
 
     public string myName;
     public GameObject spriteObj;
@@ -87,11 +86,7 @@ public class Tile : MonoBehaviour, IQPathTile
                 neighbours2.Add(t);
             }
         }
-        if(specialNeighbours != null)
-        {
-            Debug.Log(myName + " add specialNeighbours");
-            neighbours2.AddRange(specialNeighbours);
-        }
+
         if(neighbours2.Count < 1)
         {
             Debug.Log(myName + " neighbours < 1");

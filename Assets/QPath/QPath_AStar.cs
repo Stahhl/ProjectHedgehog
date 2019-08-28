@@ -30,7 +30,6 @@ namespace QPath
         T startTile;
         T endTile;
         //CostEstimateDelegate costEstimateFunc;
-        float costEstimateFunc = 1f;
 
         Queue<T> path;
         Dictionary<IQPathTile, IQPathTile> pathList;

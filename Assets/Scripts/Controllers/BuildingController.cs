@@ -43,7 +43,7 @@ public class BuildingController : MonoBehaviour
         }
 
         Debug.Log("BuildBuilding");
-        PlaceTower(previewTiles, pC.prefabController.TowerBlockerPrefab);
+        PlaceTower(previewTiles, pC.prefabController.TowerPelletPrefab);
     }
     private void PlaceTower(List<Tile> tiles, GameObject towerPrefab)
     {
