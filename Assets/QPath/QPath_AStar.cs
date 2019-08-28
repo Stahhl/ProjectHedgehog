@@ -11,8 +11,7 @@ namespace QPath
             IQPathWorld world, 
             IQPathUnit unit, 
             T startTile, 
-            T endTile, 
-            CostEstimateDelegate costEstimateFunc
+            T endTile
         )
         {
            // Do Setup
@@ -21,7 +20,7 @@ namespace QPath
             this.unit = unit;
             this.startTile = startTile;
             this.endTile = endTile;
-            this.costEstimateFunc = costEstimateFunc;
+            //this.costEstimateFunc = costEstimateFunc;
 
             // Do we need to explicitly create a graph?
         }
@@ -30,7 +29,8 @@ namespace QPath
         IQPathUnit unit;
         T startTile;
         T endTile;
-        CostEstimateDelegate costEstimateFunc;
+        //CostEstimateDelegate costEstimateFunc;
+        float costEstimateFunc = 1f;
 
         Queue<T> path;
         Dictionary<IQPathTile, IQPathTile> pathList;
@@ -54,7 +54,7 @@ namespace QPath
             g_score[startTile] = 0;
 
             Dictionary<T, float> f_score = new Dictionary<T, float>();
-            f_score[startTile] = costEstimateFunc(startTile, endTile);
+            f_score[startTile] = CostEstimate(startTile, endTile);
 
             while (openSet.Count > 0)
             {
@@ -80,7 +80,7 @@ namespace QPath
 
 
                     float total_pathfinding_cost_to_neighbor = 
-                        neighbour.AggregateCostToEnter( g_score[current], current, Foo(null), unit );
+                        neighbour.AggregateCostToEnter( g_score[current], current, LastTwoTiles(null), unit );
 
                     if(total_pathfinding_cost_to_neighbor < 0)
                     {
@@ -102,16 +102,27 @@ namespace QPath
                     came_From[neighbour] = current;
                     //pathList[neighbour] = current;
                     g_score[neighbour] = tentative_g_score;
-                    f_score[neighbour] = g_score[neighbour] + costEstimateFunc(neighbour, endTile);
+                    f_score[neighbour] = g_score[neighbour] + CostEstimate(neighbour, endTile);
 
-                    Foo(neighbour);
+                    LastTwoTiles(neighbour);
 
                     openSet.EnqueueOrUpdate(neighbour, f_score[neighbour]);
                 } // foreach neighbour
             } // while
         }
+        public static float CostEstimate(IQPathTile aa, IQPathTile bb)
+        {
+            return Distance((Tile)aa, (Tile)bb);
+        }
+        public static float Distance(Tile a, Tile b)
+        {
+            float dC = Mathf.Abs(a.X - b.X); //Column
+            float dR = Mathf.Abs(a.Y - b.Y); //Row
+
+            return Mathf.Max(dC, dR);
+        }
         //Keep track of the two latest tiles to calc direction
-        private IQPathTile[] Foo(IQPathTile t)
+        private IQPathTile[] LastTwoTiles(IQPathTile t)
         {
             if(twins == null)
                 twins = new IQPathTile[2];
@@ -169,17 +180,6 @@ namespace QPath
 
         public T[] GetList()
         {
-            if(path.Count < 1)
-            {
-                Debug.LogError("path.Count < 1");
-            }
-            //if(pathList.Count != path.Count)
-            //{
-            //    Debug.LogError("pathList.Count != path.Count");
-            //    Debug.Log("path = " + path.Count);
-            //    Debug.Log("pathList = " + pathList.Count);
-            //}
-            //Debug.Log(twins.Length);
             return path.ToArray();
         }
 

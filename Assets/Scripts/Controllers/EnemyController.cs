@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static EnumLibrary;
 
 /// <summary>
 /// Handles spawning waves and keeping track of enemies
@@ -9,8 +10,10 @@ public class EnemyController : MonoBehaviour
 {
     //Properties
     public List<_Enemy> EnemiesList { get; private set; }
+    public int WaveNumber { get; private set; }
 
     //Fields
+    private bool evenWave;
     private PlayerController pC;
     private float waveTime;
     private float timer;
@@ -34,20 +37,20 @@ public class EnemyController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (pC == null || started == false)
             return;
 
         UpdateEnemies();
-
+        UpdateWaveTimer();
+    }
+    private void UpdateWaveTimer()
+    {
         timer += Time.deltaTime;
 
-        if(timer >= waveTime)
-        {
-            timer = 0f;
+        if (timer >= waveTime)
             SendWave();
-        }
     }
     public void ForceWave()
     {
@@ -56,12 +59,41 @@ public class EnemyController : MonoBehaviour
 
         SendWave();
     }
-    void SendWave()
+    private void SendWave()
     {
         Debug.Log("SendWave");
+        timer = 0f;
+        WaveNumber++;
 
-        Tile spawnTile = pC.tileController.GetSpawnTile();
-        Tile targetTile = pC.tileController.GetTargetTile();
+        StartCoroutine(SpawnTimedWave(4, WaveType.NORMAL));
+    }
+    private IEnumerator SpawnTimedWave(int nbEnemies, WaveType waveType)
+    {
+        for (int i = 0; i < nbEnemies; i++)
+        {
+            while (true)
+            {
+                yield return new WaitForSeconds(0.5f);
+
+                GameObject prefabToRender = null;
+
+                //Enemy prefab
+                switch (waveType)
+                {
+                    case WaveType.NORMAL:
+                        prefabToRender = pC.prefabController.EnemyNormalPrefab;
+                        break;
+                }
+
+                SpawnEnemy(prefabToRender);
+                break;
+            }
+        }
+    }
+    private void SpawnEnemy(GameObject prefabToRender)
+    {
+        Tile spawnTile = pC.tileController.GetSpawnTile(WaveNumber);
+        Tile targetTile = pC.tileController.GetTargetTile(WaveNumber);
 
 
         GameObject enemyObj = Instantiate(pC.prefabController.EnemyNormalPrefab, new Vector3(spawnTile.X, spawnTile.Y, 0), Quaternion.identity, enemyAnchorObj.transform);
@@ -72,7 +104,7 @@ public class EnemyController : MonoBehaviour
 
         enemy.Init(pC, spawnTile, targetTile);
     }
-    void UpdateEnemies()
+    private void UpdateEnemies()
     {
         foreach (var enemy in enemyToGoMap)
         {
@@ -88,11 +120,11 @@ public class EnemyController : MonoBehaviour
         if (enemiesToDestroyList.Count > 0)
             DestroyEnemies();
     }
-    void EnemyReachedTarget()
+    private void EnemyReachedTarget()
     {
         Debug.Log("Enemy reached target! ");
     }
-    void DestroyEnemies()
+    private void DestroyEnemies()
     {
         foreach (var item in enemiesToDestroyList)
         {

@@ -11,6 +11,8 @@ public class TileController : MonoBehaviour
     private GameObject tileAnchorObj;
     [SerializeField]
     private GameObject refObj;
+    [SerializeField]
+    private GameObject pathEnemyObj;
 
     private PlayerController pC;
     private int arenaWidth = 28;
@@ -24,6 +26,7 @@ public class TileController : MonoBehaviour
     private List<Tile> spawnTiles2;
     private List<Tile> targetTiles1;
     private List<Tile> targetTiles2;
+    private _Enemy pathEnemy;
 
     public void Init(PlayerController pC)
     {
@@ -35,10 +38,14 @@ public class TileController : MonoBehaviour
 
         spawnTiles1 = new List<Tile>();
         targetTiles1 = new List<Tile>();
+        spawnTiles2 = new List<Tile>();
+        targetTiles2 = new List<Tile>();
 
         listOfLists = new List<List<Tile>>();
         listOfLists.Add(spawnTiles1);
         listOfLists.Add(targetTiles1);
+        listOfLists.Add(spawnTiles2);
+        listOfLists.Add(targetTiles2);
 
         refObj.SetActive(false);
 
@@ -75,9 +82,13 @@ public class TileController : MonoBehaviour
     {
         GameObject sT1 = GameObject.FindGameObjectWithTag("SpawnTiles1");
         GameObject tT1 = GameObject.FindGameObjectWithTag("TargetTiles1");
+        GameObject sT2 = GameObject.FindGameObjectWithTag("SpawnTiles2");
+        GameObject tT2 = GameObject.FindGameObjectWithTag("TargetTiles2");
 
         for (int i = 0; i < sT1.transform.childCount; i++)
         {
+            sT1.transform.GetChild(i).GetComponentInChildren<SpriteRenderer>().color = Color.green;
+
             Tile tile = sT1.transform.GetChild(i).GetComponent<Tile>();
 
             spawnTiles1.Add(tile);
@@ -88,9 +99,35 @@ public class TileController : MonoBehaviour
         }
         for (int i = 0; i < tT1.transform.childCount; i++)
         {
+            tT1.transform.GetChild(i).GetComponentInChildren<SpriteRenderer>().color = Color.red;
+
             Tile tile = tT1.transform.GetChild(i).GetComponent<Tile>();
 
             targetTiles1.Add(tile);
+
+            tile.Init(pC);
+
+            tile.MyTileType = TileType.ENEMY;
+        }
+        for (int i = 0; i < sT2.transform.childCount; i++)
+        {
+            sT2.transform.GetChild(i).GetComponentInChildren<SpriteRenderer>().color = Color.green;
+
+            Tile tile = sT2.transform.GetChild(i).GetComponent<Tile>();
+
+            spawnTiles2.Add(tile);
+
+            tile.Init(pC);
+
+            tile.MyTileType = TileType.ENEMY;
+        }
+        for (int i = 0; i < tT2.transform.childCount; i++)
+        {
+            tT2.transform.GetChild(i).GetComponentInChildren<SpriteRenderer>().color = Color.red;
+
+            Tile tile = tT2.transform.GetChild(i).GetComponent<Tile>();
+
+            targetTiles2.Add(tile);
 
             tile.Init(pC);
 
@@ -113,12 +150,29 @@ public class TileController : MonoBehaviour
             }
         }
     }
-    public Tile GetSpawnTile()
+    public Tile GetSpawnTile(int waveNumber)
     {
         try
         {
-            int rnd = UnityEngine.Random.Range(0, spawnTiles1.Count);
-            return spawnTiles1[rnd];
+            //Even
+            if(waveNumber % 2 == 0)
+            {
+                int rnd = UnityEngine.Random.Range(0, spawnTiles2.Count);
+
+                return spawnTiles2[rnd];
+
+            }
+            //Odd
+            if (waveNumber % 2 != 0)
+            {
+                int rnd = UnityEngine.Random.Range(0, spawnTiles1.Count);
+
+                return spawnTiles1[rnd];
+            }
+            else
+            {
+                throw new System.Exception();
+            }
         }
         catch
         {
@@ -126,12 +180,29 @@ public class TileController : MonoBehaviour
             return null;
         }
     }
-    public Tile GetTargetTile()
+    public Tile GetTargetTile(int waveNumber)
     {
         try
         {
-            int rnd = UnityEngine.Random.Range(0, targetTiles1.Count);
-            return targetTiles1[rnd];
+            //Even
+            if (waveNumber % 2 == 0)
+            {
+                int rnd = UnityEngine.Random.Range(0, targetTiles2.Count);
+
+                return targetTiles2[rnd];
+
+            }
+            //Odd
+            if (waveNumber % 2 != 0)
+            {
+                int rnd = UnityEngine.Random.Range(0, targetTiles1.Count);
+
+                return targetTiles1[rnd];
+            }
+            else
+            {
+                throw new System.Exception();
+            }
         }
         catch
         {
@@ -174,5 +245,23 @@ public class TileController : MonoBehaviour
         }
 
         return null;
+    }
+    public bool IsPathBlocked()
+    {
+        if(pathEnemy == null)
+        {
+            pathEnemy = pathEnemyObj.GetComponentInChildren<_Enemy>();
+            pathEnemy.Init(pC, null, null);
+        }
+
+        var x = QPath.QPath.FindPath<Tile>(pC, pathEnemy, spawnTiles1[0], targetTiles1[0]);
+        var y = QPath.QPath.FindPath<Tile>(pC, pathEnemy, spawnTiles2[0], targetTiles2[0]);
+
+        if(x.Length == 0 || y.Length == 0)
+        {
+            Debug.Log("Path blocked");
+        }
+
+        return false;
     }
 }

@@ -21,6 +21,7 @@ public abstract class _Enemy : MonoBehaviour, IQPathUnit
     protected PlayerController pC;
     private Tile nextTile;
     private int index;
+    private bool init;
 
     public virtual void Init(PlayerController pC, Tile startTile, Tile targetTile)
     {
@@ -29,12 +30,14 @@ public abstract class _Enemy : MonoBehaviour, IQPathUnit
         this.TargetTile = targetTile;
 
         this.CurrentTile = this.StartTile;
-        this.MyPath = QPath.QPath.FindPath<Tile>(pC, this, StartTile, TargetTile, Tile.CostEstimate).ToList();
+
+        if (CurrentTile != null)
+            this.MyPath = QPath.QPath.FindPath<Tile>(pC, this, StartTile, TargetTile).ToList();
     }
 
     protected virtual void Update()
     {
-        if (pC == null && IsDestroyed == true)
+        if (pC == null || IsDestroyed == true || MyPath == null)
             return;
 
         UpdateMovement();
@@ -66,11 +69,19 @@ public abstract class _Enemy : MonoBehaviour, IQPathUnit
 
         if (Vector3.Distance(transform.position, targetPos) <= 0.2f)
         {
-            CurrentTile = nextTile;
+            //CurrentTile = nextTile;
+            SwitchTile();
             GetNextTile();
         }
     }
-    void GetNextTile()
+    private void SwitchTile()
+    {
+        nextTile.MyTileType = TileType.ENEMY;
+        CurrentTile.MyTileType = TileType.OPEN;
+
+        CurrentTile = nextTile;
+    }
+    private void GetNextTile()
     {
         index++;
 

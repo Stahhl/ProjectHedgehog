@@ -51,17 +51,7 @@ public class Tile : MonoBehaviour, IQPathTile
 
         return cost;
     }
-    public static float CostEstimate(IQPathTile aa, IQPathTile bb)
-    {
-        return Distance((Tile)aa, (Tile)bb);
-    }
-    public static float Distance(Tile a, Tile b)
-    {
-        float dC = Mathf.Abs(a.X - b.X); //Column
-        float dR = Mathf.Abs(a.Y - b.Y); //Row
 
-        return Mathf.Max(dC, dR);
-    }
     public Vector3 GetTilePosition()
     {
         //Debug.Log("GetTilePosition");

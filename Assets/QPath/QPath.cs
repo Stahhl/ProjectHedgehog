@@ -28,8 +28,7 @@ namespace QPath
             IQPathWorld world, 
             IQPathUnit unit, 
             T startTile, 
-            T endTile,
-            CostEstimateDelegate costEstimateFunc
+            T endTile
             ) where T : IQPathTile
         {
             //Debug.Log("QPath::FindPath");
@@ -42,7 +41,7 @@ namespace QPath
             // Call on our actual path solver
 
 
-            QPath_AStar<T> resolver = new QPath_AStar<T>( world, unit, startTile, endTile, costEstimateFunc );
+            QPath_AStar<T> resolver = new QPath_AStar<T>( world, unit, startTile, endTile);
 
             resolver.DoWork();
             return resolver.GetList();

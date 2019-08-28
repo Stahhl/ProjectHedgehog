@@ -27,7 +27,13 @@ public class BuildingController : MonoBehaviour
         if (pC == null)
             return;
 
-
+        if(
+            BuildMode == true && 
+            pC.mouseController.CurrentPoint != null &&
+            pC.tileController.IsPathBlocked() == false)
+        {
+            PreviewOnMouse(pC.mouseController.CurrentPoint);
+        }
     }
     public void BuildBuilding()
     {

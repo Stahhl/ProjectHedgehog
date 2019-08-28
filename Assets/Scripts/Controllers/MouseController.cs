@@ -7,12 +7,13 @@ public class MouseController : MonoBehaviour
 
     //Properties
     public Tile TileUnderMouse { get; private set; }
+    public Vector2? CurrentPoint { get; private set; }
 
     //Fields
     private PlayerController pC;
     private Tile lastTileUnderMouse = null;
     private Vector3 mousePos;
-    private Vector2? currentPoint = null;
+    //private Vector2? currentPoint = null;
     private Vector2? lastPoint = null;
 
     [SerializeField]
@@ -49,13 +50,13 @@ public class MouseController : MonoBehaviour
             float X = Mathf.Round(mousePos.x * 2) / 2;
             float Y = Mathf.Round(mousePos.y * 2) / 2;
 
-            currentPoint = new Vector2(X, Y);
+            CurrentPoint = new Vector2(X, Y);
 
-            if (currentPoint != lastPoint)
+            if (CurrentPoint != lastPoint)
             {
                 //Debug.Log("currentPoint = " + X + "_" + Y);
-                pC.buildingController.PreviewOnMouse(currentPoint);
-                lastPoint = currentPoint;
+                //pC.buildingController.PreviewOnMouse(currentPoint);
+                lastPoint = CurrentPoint;
             }
         }
         if (TileUnderMouse != lastTileUnderMouse)
@@ -63,9 +64,9 @@ public class MouseController : MonoBehaviour
             //Debug.Log("new TileUnderMouse");
             if (TileUnderMouse == null)
             {
-                currentPoint = null;
+                CurrentPoint = null;
                 lastPoint = null;
-                pC.buildingController.PreviewOnMouse(currentPoint);
+                //pC.buildingController.PreviewOnMouse(currentPoint);
             }
 
             lastTileUnderMouse = TileUnderMouse;
