@@ -6,6 +6,7 @@ using System.Linq;
 public class Normal : _Enemy
 {
     //Child values assigned to parent properties in init
+    private float hp = 30f;
     private float speedModifer = 6f;
     private bool ignoreTerrain = false;
 
@@ -13,6 +14,7 @@ public class Normal : _Enemy
     {
         base.SpeedModifier = speedModifer;
         base.IgnoreTerrain = ignoreTerrain;
+        base.HealthPoints = hp + pC.enemyController.WaveNumber;
 
         //base
         base.Init(pC, startNode, targetNode);

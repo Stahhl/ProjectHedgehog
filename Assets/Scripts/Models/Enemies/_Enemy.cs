@@ -11,11 +11,14 @@ public abstract class _Enemy : MonoBehaviour, IQPathUnit
     public Tile StartTile { get; protected set; }
     public Tile TargetTile { get; protected set; }
     public Tile CurrentTile { get; protected set; }
-    public float SpeedModifier { get; protected set; }
-    public bool IgnoreTerrain { get; protected set; }
     public bool IsDestroyed { get; protected set; }
     public bool ReachedTarget { get; protected set; }
     public List<Tile> MyPath { get; protected set; }
+
+    //Stats
+    public float SpeedModifier { get; protected set; }
+    public bool IgnoreTerrain { get; protected set; }
+    public float HealthPoints { get; protected set; }
 
     //Fields
     protected PlayerController pC;
@@ -52,7 +55,16 @@ public abstract class _Enemy : MonoBehaviour, IQPathUnit
             ReachedTarget = true;
         }
     }
+    public void AdjustHp(float amount)
+    {
+        Debug.Log("AdjustHp");
+        HealthPoints -= amount;
 
+        if(HealthPoints <= 0)
+        {
+            IsDestroyed = true;
+        }
+    }
     private void UpdateMovement()
     {
         if (nextTile == null && index == 0)
@@ -62,8 +74,8 @@ public abstract class _Enemy : MonoBehaviour, IQPathUnit
 
         Vector3 direction = targetPos - transform.position;
 
-        //if (direction != Vector3.zero)
-        //    UpdateRotation(direction);
+        if (direction != Vector3.zero)
+            UpdateRotation(direction);
 
         transform.Translate(direction.normalized * SpeedModifier * Time.deltaTime, Space.World);
 
@@ -73,6 +85,12 @@ public abstract class _Enemy : MonoBehaviour, IQPathUnit
             SwitchTile();
             GetNextTile();
         }
+    }
+    void UpdateRotation(Vector3 moveDirection)
+    {
+        Debug.Log("UpdateRotation");
+        float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
     private void SwitchTile()
     {

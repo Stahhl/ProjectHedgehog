@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour, IQPathWorld
     public MouseController mouseController { get; private set; }
     public BuildingController buildingController { get; private set; }
     public PrefabController prefabController { get; private set; }
+    public CombatController combatController { get; private set; }
 
     public Camera mainCamera { get; private set; }
 
@@ -31,6 +32,7 @@ public class PlayerController : MonoBehaviour, IQPathWorld
         this.keyboardController = GetComponent<KeyboardController>();
         this.mouseController = GetComponent<MouseController>();
         this.buildingController = GetComponent<BuildingController>();
+        this.combatController = GetComponent<CombatController>();
 
         this.prefabController = PrefabControllerObj.GetComponent<PrefabController>();
 
@@ -39,6 +41,7 @@ public class PlayerController : MonoBehaviour, IQPathWorld
         keyboardController.Init(this);
         mouseController.Init(this);
         buildingController.Init(this);
+        combatController.Init(this);
     }
 
     public void EscapeFunction()

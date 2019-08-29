@@ -4,22 +4,35 @@ using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
-    private Vector3 target;
+    //Fields
+    private GameObject targetObj;
+    private Vector3 targetPos;
 
-    public void SetTarget(Vector3 target)
+    private PlayerController pC;
+    private _Tower myTower;
+    private _Enemy myEnemy;
+
+
+    public void Init(PlayerController pC, _Tower tower, GameObject target)
     {
-        this.target = target;
+        this.pC = pC;
+        this.myTower = tower;
+
+        this.targetObj = target;
+
+        this.myEnemy = target.GetComponent<_Enemy>();
+        this.targetPos = target.transform.position;
     }
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if (target == null)
+        if (targetObj == null)
         {
             Destroy(gameObject);
             return;
         }
 
-        Vector3 dir = target - transform.position;
+        Vector3 dir = targetPos - transform.position;
 
         float travelFrame = 70 * Time.deltaTime;
 
@@ -31,9 +44,10 @@ public class Projectile : MonoBehaviour
 
         transform.Translate(dir.normalized * travelFrame, Space.World);
     }
-    void HitTarget()
+    private void HitTarget()
     {
         Debug.Log("HitTarget");
+        pC.combatController.DamageCalculator(myTower, myEnemy);
         Destroy(gameObject);
     }
 }

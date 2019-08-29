@@ -8,6 +8,7 @@ public abstract class _Tower : MonoBehaviour
     public List<Tile> MyTiles { get; protected set; }
     public float MyCooldown { get; protected set; }
     public float MyRange { get; protected set; }
+    public float MyDamage { get; protected set; }
 
     //Fields
     protected PlayerController pC;
@@ -63,7 +64,7 @@ public abstract class _Tower : MonoBehaviour
         GameObject projObj = Instantiate(myProjectilePrefab, firePoint.transform.position, firePoint.transform.rotation);
         Projectile proj = projObj.GetComponent<Projectile>();
 
-        proj.SetTarget(myTarget.transform.position);
+        proj.Init(pC, this, myTarget.gameObject);
     }
     void UpdateRotation(Vector3 direction)
     {
