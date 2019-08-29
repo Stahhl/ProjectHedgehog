@@ -4,6 +4,7 @@ using UnityEngine;
 using QPath;
 using System.Linq;
 using System;
+using static EnumLibrary;
 
 public abstract class _Enemy : MonoBehaviour, IQPathUnit
 {
@@ -19,6 +20,7 @@ public abstract class _Enemy : MonoBehaviour, IQPathUnit
     public float SpeedModifier { get; protected set; }
     public bool IgnoreTerrain { get; protected set; }
     public float HealthPoints { get; protected set; }
+    public float Armour { get; protected set; }
 
     //Fields
     protected PlayerController pC;
@@ -57,7 +59,7 @@ public abstract class _Enemy : MonoBehaviour, IQPathUnit
     }
     public void AdjustHp(float amount)
     {
-        Debug.Log("AdjustHp");
+        //Debug.Log("AdjustHp");
         HealthPoints -= amount;
 
         if(HealthPoints <= 0)
@@ -88,7 +90,7 @@ public abstract class _Enemy : MonoBehaviour, IQPathUnit
     }
     void UpdateRotation(Vector3 moveDirection)
     {
-        Debug.Log("UpdateRotation");
+        //Debug.Log("UpdateRotation");
         float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
     }
@@ -108,6 +110,7 @@ public abstract class _Enemy : MonoBehaviour, IQPathUnit
 
         nextTile = MyPath[index];
     }
+    #region pathfinding
     public float TileToTileCost(Tile newTile, IQPathTile[] tiles)
     {
         //Debug.Log("Tile: " + tile.ToString() + " Movement cost to enter: " + tile.movementCost);
@@ -147,4 +150,5 @@ public abstract class _Enemy : MonoBehaviour, IQPathUnit
         //Debug.Log("CostToEnterTile");
         return 1f;
     }
+    #endregion
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using static EnumLibrary;
 
 /// <summary>
 /// Manages the visuals of the arena and the node system.

@@ -111,7 +111,7 @@ public class EnemyController : MonoBehaviour
             if (enemy.Key.IsDestroyed == true)
             {
                 if (enemy.Key.ReachedTarget == true)
-                    EnemyReachedTarget();
+                    pC.combatController.EnemyReachedTarget();
 
                 enemiesToDestroyList.Add(enemy.Key);
             }
@@ -120,10 +120,7 @@ public class EnemyController : MonoBehaviour
         if (enemiesToDestroyList.Count > 0)
             DestroyEnemies();
     }
-    private void EnemyReachedTarget()
-    {
-        Debug.Log("Enemy reached target! ");
-    }
+
     private void DestroyEnemies()
     {
         foreach (var item in enemiesToDestroyList)

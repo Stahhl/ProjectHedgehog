@@ -9,4 +9,14 @@ public static class EnumLibrary
         NULL,
         NORMAL
     }
+    public enum TileType
+    {
+        NULL,
+        OPEN,
+        OCCUPIED,
+        ENEMY,
+        ENEMYSPAWN,
+        ENEMYTARGET,
+        FRIENDLY
+    }
 }

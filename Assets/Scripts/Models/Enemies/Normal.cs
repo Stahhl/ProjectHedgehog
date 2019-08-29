@@ -9,11 +9,13 @@ public class Normal : _Enemy
     private float hp = 30f;
     private float speedModifer = 6f;
     private bool ignoreTerrain = false;
+    private float armour = 1f;
 
     public override void Init(PlayerController pC, Tile startNode, Tile targetNode)
     {
         base.SpeedModifier = speedModifer;
         base.IgnoreTerrain = ignoreTerrain;
+        base.Armour = armour;
         base.HealthPoints = hp + pC.enemyController.WaveNumber;
 
         //base

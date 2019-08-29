@@ -1,17 +1,7 @@
 ﻿using QPath;
 using System.Collections.Generic;
 using UnityEngine;
-
-public enum TileType
-{
-    NULL,
-    OPEN,
-    OCCUPIED,
-    ENEMY,
-    ENEMYSPAWN,
-    ENEMYTARGET,
-    FRIENDLY
-}
+using static EnumLibrary;
 
 public class Tile : MonoBehaviour, IQPathTile
 {

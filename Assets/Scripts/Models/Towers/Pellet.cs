@@ -8,14 +8,16 @@ public class Pellet : _Tower
     float myRange = 8f;
     float myCooldown = 3f;
     float myDamage = 10f;
+    float armourPen = 1f;
 
     public override void Init(PlayerController pC, List<Tile> tiles)
     {
         base.Init(pC, tiles);
 
-        base.MyRange = myRange;
-        base.MyCooldown = myCooldown;
-        base.MyDamage = myDamage;
+        base.Range = myRange;
+        base.Cooldown = myCooldown;
+        base.Damage = myDamage;
+        base.ArmourPeneration = armourPen;
 
         base.myProjectilePrefab = pC.prefabController.ProjectilePelletPrefab;
     }

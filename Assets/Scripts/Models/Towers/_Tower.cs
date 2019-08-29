@@ -1,14 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static EnumLibrary;
 
 public abstract class _Tower : MonoBehaviour
 {
     //Properties
     public List<Tile> MyTiles { get; protected set; }
-    public float MyCooldown { get; protected set; }
-    public float MyRange { get; protected set; }
-    public float MyDamage { get; protected set; }
+    public float Cooldown { get; protected set; }
+    public float Range { get; protected set; }
+    public float Damage { get; protected set; }
+    public float ArmourPeneration { get; protected set; }
+
 
     //Fields
     protected PlayerController pC;
@@ -54,7 +57,7 @@ public abstract class _Tower : MonoBehaviour
 
         UpdateRotation(direction);
 
-        if (cooldown >= MyCooldown)
+        if (cooldown >= Cooldown)
             Fire();
     }
     void Fire()
@@ -86,7 +89,7 @@ public abstract class _Tower : MonoBehaviour
         {
             float dist = Vector3.Distance(this.transform.position, e.transform.position);
 
-            if (dist >= MyRange)
+            if (dist >= Range)
                 continue;
 
             if (shortDist == null || dist < shortDist)
@@ -99,7 +102,7 @@ public abstract class _Tower : MonoBehaviour
     {
         float dist = Vector3.Distance(this.transform.position, enemyObj.transform.position);
 
-        if (dist <= MyRange)
+        if (dist <= Range)
         {
             //Debug.Log("TrackTarget: " + dist);
             return enemyObj;

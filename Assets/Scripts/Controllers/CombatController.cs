@@ -2,6 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Handles in game logic (damage calc)
+/// Keeping track of game state (player life)
+/// </summary>
+
 public class CombatController : MonoBehaviour
 {
     //Fields
@@ -11,9 +16,22 @@ public class CombatController : MonoBehaviour
     {
         this.pC = pC;
     }
-    public void DamageCalculator(_Tower tower, _Enemy enemy)
+    //direct hit
+    //TODO damage calculator for splash damage (explosions)
+    //TODO damage calculator that accounts for range (shotgun?)
+    public void DamageCalculator_TowerToEnemy(_Tower tower, _Enemy enemy)
     {
-        //Debug.Log();
-        enemy.AdjustHp(10f);
+        float ap = 100 - (enemy.Armour / tower.ArmourPeneration);
+        float armourFactor = Mathf.Clamp(ap, 0.05f, 0.95f);
+
+        float damage = tower.Damage * armourFactor;
+
+        Debug.Log("damage = " + damage);
+        enemy.AdjustHp(damage);
+    }
+    public void EnemyReachedTarget()
+    {
+        //TODO Player life ticks down
+        Debug.Log("Enemy reached target! ");
     }
 }

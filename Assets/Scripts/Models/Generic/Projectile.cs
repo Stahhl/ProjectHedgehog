@@ -46,8 +46,8 @@ public class Projectile : MonoBehaviour
     }
     private void HitTarget()
     {
-        Debug.Log("HitTarget");
-        pC.combatController.DamageCalculator(myTower, myEnemy);
+        //Debug.Log("HitTarget");
+        pC.combatController.DamageCalculator_TowerToEnemy(myTower, myEnemy);
         Destroy(gameObject);
     }
 }
