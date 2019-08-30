@@ -12,9 +12,13 @@ public class CombatController : MonoBehaviour
     //Fields
     private PlayerController pC;
 
+    public int PlayerLives { get; private set; }
+
     public void Init(PlayerController pC)
     {
         this.pC = pC;
+
+        PlayerLives = 20;
     }
     //direct hit
     //TODO damage calculator for splash damage (explosions)
@@ -26,12 +30,12 @@ public class CombatController : MonoBehaviour
 
         float damage = tower.Damage * armourFactor;
 
-        Debug.Log("damage = " + damage);
+        //Debug.Log("damage = " + damage);
         enemy.AdjustHp(damage);
     }
     public void EnemyReachedTarget()
     {
-        //TODO Player life ticks down
         Debug.Log("Enemy reached target! ");
+        PlayerLives--;
     }
 }

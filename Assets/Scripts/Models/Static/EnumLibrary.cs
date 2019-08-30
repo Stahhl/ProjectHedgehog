@@ -17,6 +17,7 @@ public static class EnumLibrary
         ENEMY,
         ENEMYSPAWN,
         ENEMYTARGET,
-        FRIENDLY
+        FRIENDLY,
+        TEMPBLOCKED //Used by pathfinding
     }
 }

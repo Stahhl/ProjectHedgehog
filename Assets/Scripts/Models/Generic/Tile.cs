@@ -13,6 +13,7 @@ public class Tile : MonoBehaviour, IQPathTile
     //Fields
     private PlayerController pC;
     private Tile[] myNeighbours;
+    private TileType lastTileType;
 
     public string myName;
     public GameObject spriteObj;
@@ -35,12 +36,28 @@ public class Tile : MonoBehaviour, IQPathTile
 
         if (ignoreTerrain == true)
             return cost;
-        if (MyTileType == TileType.OCCUPIED)
+        if (MyTileType == TileType.OCCUPIED || MyTileType == TileType.TEMPBLOCKED)
             cost -= 99;
 
         return cost;
     }
+    public void ToggleTempBlocking(bool toggle)
+    {
+        //Toggle on
+        if(toggle == true)
+        {
+            lastTileType = MyTileType;
 
+            MyTileType = TileType.TEMPBLOCKED;
+        }
+        //Toggle off
+        if(toggle == false)
+        {
+            MyTileType = lastTileType;
+
+            lastTileType = TileType.NULL;
+        }
+    }
     public Vector3 GetTilePosition()
     {
         //Debug.Log("GetTilePosition");

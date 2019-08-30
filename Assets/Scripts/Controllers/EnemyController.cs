@@ -11,6 +11,7 @@ public class EnemyController : MonoBehaviour
     //Properties
     public List<_Enemy> EnemiesList { get; private set; }
     public int WaveNumber { get; private set; }
+    public int EnemiesKilled { get; private set; }
 
     //Fields
     private bool evenWave;
@@ -20,9 +21,6 @@ public class EnemyController : MonoBehaviour
     private bool started;
     private Dictionary<_Enemy, GameObject> enemyToGoMap;
     private List<_Enemy> enemiesToDestroyList;
-
-    [SerializeField]
-    private GameObject enemyAnchorObj;
 
     public void Init(PlayerController pC)
     {
@@ -96,7 +94,13 @@ public class EnemyController : MonoBehaviour
         Tile targetTile = pC.tileController.GetTargetTile(WaveNumber);
 
 
-        GameObject enemyObj = Instantiate(pC.prefabController.EnemyNormalPrefab, new Vector3(spawnTile.X, spawnTile.Y, 0), Quaternion.identity, enemyAnchorObj.transform);
+        GameObject enemyObj = Instantiate(
+            pC.prefabController.EnemyNormalPrefab, 
+            new Vector3(spawnTile.X, spawnTile.Y, 0), 
+            Quaternion.identity, 
+            pC.EnemyAnchorObj.transform
+            );
+
         _Enemy enemy = enemyObj.GetComponentInChildren<_Enemy>();
 
         EnemiesList.Add(enemy);
@@ -128,6 +132,8 @@ public class EnemyController : MonoBehaviour
             Destroy(enemyToGoMap[item]);
             enemyToGoMap.Remove(item);
             EnemiesList.Remove(item);
+            EnemiesKilled++;
+            pC.buildingController.AdjustGold(false, item.Bounty);
         }
 
         enemiesToDestroyList.Clear();

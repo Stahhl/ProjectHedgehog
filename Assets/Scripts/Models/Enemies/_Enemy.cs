@@ -15,6 +15,7 @@ public abstract class _Enemy : MonoBehaviour, IQPathUnit
     public bool IsDestroyed { get; protected set; }
     public bool ReachedTarget { get; protected set; }
     public List<Tile> MyPath { get; protected set; }
+    public int Bounty { get; protected set; }
 
     //Stats
     public float SpeedModifier { get; protected set; }

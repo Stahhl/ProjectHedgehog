@@ -11,14 +11,14 @@ public abstract class _Tower : MonoBehaviour
     public float Range { get; protected set; }
     public float Damage { get; protected set; }
     public float ArmourPeneration { get; protected set; }
-
+    public int Cost { get; protected set; }
 
     //Fields
     protected PlayerController pC;
     protected GameObject myProjectilePrefab;
     protected GameObject myTarget;
     protected bool inRange;
-    protected float cooldown;
+    protected float cdTimer;
 
     [SerializeField]
     private GameObject baseObj;
@@ -32,6 +32,8 @@ public abstract class _Tower : MonoBehaviour
         this.pC = pC;
         this.MyTiles = tiles;
 
+        pC.buildingController.AdjustGold(true, Cost);
+
         foreach (var t in MyTiles)
         {
             t.MyTileType = TileType.OCCUPIED;
@@ -41,7 +43,7 @@ public abstract class _Tower : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
-        cooldown += Time.deltaTime;
+        cdTimer += Time.deltaTime;
 
         if (myTarget == null)
             myTarget = FindNeareastEnemy();
@@ -57,14 +59,19 @@ public abstract class _Tower : MonoBehaviour
 
         UpdateRotation(direction);
 
-        if (cooldown >= Cooldown)
+        if (cdTimer >= Cooldown)
             Fire();
     }
     void Fire()
     {
-        Debug.Log("Fire");
-        cooldown = 0f;
-        GameObject projObj = Instantiate(myProjectilePrefab, firePoint.transform.position, firePoint.transform.rotation);
+        //Debug.Log("Fire");
+        cdTimer = 0f;
+        GameObject projObj = Instantiate(
+            myProjectilePrefab, 
+            firePoint.transform.position, 
+            firePoint.transform.rotation,
+            pC.ProjectileAnchorObj.transform
+            );
         Projectile proj = projObj.GetComponent<Projectile>();
 
         proj.Init(pC, this, myTarget.gameObject);
@@ -73,9 +80,7 @@ public abstract class _Tower : MonoBehaviour
     {
         //Debug.Log("UpdateRotation");
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        //TurrerObj.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         turretObj.transform.rotation = Quaternion.Euler(0f, 0f, angle - 90);
-        //TurrerObj.transform.LookAt(myTarget.transform, Vector3.up);
     }
     GameObject FindNeareastEnemy()
     {

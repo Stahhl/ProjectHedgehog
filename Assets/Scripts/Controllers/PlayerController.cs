@@ -10,6 +10,13 @@ public class PlayerController : MonoBehaviour, IQPathWorld
     private GameObject MainCameraObj;
     [SerializeField]
     private GameObject PrefabControllerObj;
+    [SerializeField]
+    private GameObject UiControllerObj;
+
+    //Anchors
+    public GameObject TowerAnchorObj;
+    public GameObject EnemyAnchorObj;
+    public GameObject ProjectileAnchorObj;
 
     //Properties
     public TileController tileController { get; private set; }
@@ -19,6 +26,7 @@ public class PlayerController : MonoBehaviour, IQPathWorld
     public BuildingController buildingController { get; private set; }
     public PrefabController prefabController { get; private set; }
     public CombatController combatController { get; private set; }
+    public UiController uiController { get; private set; }
 
     public Camera mainCamera { get; private set; }
 
@@ -35,6 +43,7 @@ public class PlayerController : MonoBehaviour, IQPathWorld
         this.combatController = GetComponent<CombatController>();
 
         this.prefabController = PrefabControllerObj.GetComponent<PrefabController>();
+        this.uiController = UiControllerObj.GetComponent<UiController>();
 
         tileController.Init(this);
         enemyController.Init(this);
@@ -42,6 +51,7 @@ public class PlayerController : MonoBehaviour, IQPathWorld
         mouseController.Init(this);
         buildingController.Init(this);
         combatController.Init(this);
+        uiController.Init(this);
     }
 
     public void EscapeFunction()

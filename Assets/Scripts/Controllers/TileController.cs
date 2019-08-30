@@ -247,7 +247,7 @@ public class TileController : MonoBehaviour
 
         return null;
     }
-    public bool IsPathBlocked()
+    public bool IsPathBlocked(List<Tile> tiles)
     {
         if(pathEnemy == null)
         {
@@ -255,14 +255,25 @@ public class TileController : MonoBehaviour
             pathEnemy.Init(pC, null, null);
         }
 
+        foreach (var t in tiles)
+        {
+            t.ToggleTempBlocking(true);
+        }
+
         var x = QPath.QPath.FindPath<Tile>(pC, pathEnemy, spawnTiles1[0], targetTiles1[0]);
         var y = QPath.QPath.FindPath<Tile>(pC, pathEnemy, spawnTiles2[0], targetTiles2[0]);
 
-        if(x.Length == 0 || y.Length == 0)
+        foreach (var t in tiles)
         {
-            Debug.Log("Path blocked");
+            t.ToggleTempBlocking(false);
         }
 
-        return false;
+        if (x.Length == 0 || y.Length == 0)
+        {
+            Debug.Log("Path blocked");
+            return false;
+        }
+
+        return true;
     }
 }

@@ -9,17 +9,18 @@ public class Pellet : _Tower
     float myCooldown = 3f;
     float myDamage = 10f;
     float armourPen = 1f;
+    int cost = 5;
 
     public override void Init(PlayerController pC, List<Tile> tiles)
     {
-        base.Init(pC, tiles);
-
         base.Range = myRange;
         base.Cooldown = myCooldown;
         base.Damage = myDamage;
         base.ArmourPeneration = armourPen;
-
+        base.Cost = cost;
         base.myProjectilePrefab = pC.prefabController.ProjectilePelletPrefab;
+
+        base.Init(pC, tiles);
     }
     // Update is called once per frame
     protected override void Update()

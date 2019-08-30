@@ -11,15 +11,14 @@ public class BuildingController : MonoBehaviour
     private GameObject[] previewObj;
     private List<Tile> previewTiles;
 
-    [SerializeField]
-    private GameObject TowerAnchorObj;
-
     //Properties
     public bool BuildMode { get; private set; }
+    public int Gold { get; private set; }
 
     public void Init(PlayerController pC)
     {
         this.pC = pC;
+        Gold = 20;
     }
 
     // Update is called once per frame
@@ -28,12 +27,21 @@ public class BuildingController : MonoBehaviour
         if (pC == null)
             return;
 
-        if(
-            BuildMode == true && 
-            pC.mouseController.CurrentPoint != null &&
-            pC.tileController.IsPathBlocked() == false)
+
+        if(BuildMode == true && pC.mouseController.CurrentPoint != null)
         {
             PreviewOnMouse(pC.mouseController.CurrentPoint);
+        }
+    }
+    public void AdjustGold(bool negative, int amount)
+    {
+        if(negative == false)
+        {
+            Gold += amount;
+        }
+        if(negative == true)
+        {
+            Gold -= amount;
         }
     }
     public void BuildBuilding()
@@ -52,7 +60,7 @@ public class BuildingController : MonoBehaviour
             towerPrefab, 
             new Vector3(tiles[0].X, tiles[0].Y, 0),
             Quaternion.identity, 
-            TowerAnchorObj.transform
+            pC.TowerAnchorObj.transform
             );
 
         towerObj.GetComponentInChildren<_Tower>().Init(pC, tiles);
@@ -60,21 +68,19 @@ public class BuildingController : MonoBehaviour
     public void PreviewOnMouse(Vector2? point)
     {
         DestroyPreview();
+        buildingPlacement = true;
 
         if (BuildMode == false || point == null)
         {
             //Debug.Log("DisplayPreview - return");
             //BuildMode = false;
             buildingPlacement = false;
-
             return;
         }
 
         //Debug.Log("DisplayPreview");
-
         previewObj = new GameObject[4];
         previewTiles = pC.tileController.GetTilesAroundPoint((Vector2)point);
-        buildingPlacement = true;
 
         foreach (Tile t in previewTiles)
         {
@@ -83,6 +89,9 @@ public class BuildingController : MonoBehaviour
                 buildingPlacement = false;
             }
         }
+
+        if (buildingPlacement == true)
+            buildingPlacement = pC.tileController.IsPathBlocked(previewTiles);
 
         DrawPreview(previewTiles, buildingPlacement);
     }
@@ -106,7 +115,7 @@ public class BuildingController : MonoBehaviour
                 pC.prefabController.PreviewPrefab, 
                 tiles[i].GetTilePosition(), 
                 Quaternion.identity, 
-                TowerAnchorObj.transform
+                pC.TowerAnchorObj.transform
                 );
 
             previewObj[i].GetComponentInChildren<SpriteRenderer>().color = color;
@@ -118,7 +127,6 @@ public class BuildingController : MonoBehaviour
             return;
 
         //Debug.Log("DestroyPreview");
-
         foreach (var gO in previewObj)
         {
             Destroy(gO);
